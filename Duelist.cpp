@@ -31,15 +31,52 @@ string Duelist::get_name()const {
 void Duelist::set_Deck(const Deck& deck) {
 	this->myDeck = deck;
 }
-void Duelist::add_silver(const int silver) {
-	this->myMoney.add_silver(silver);
-}
-void Duelist::add_gold(const int gold) {
-	this->myMoney.add_gold(gold);
-}
-void Duelist::remove_silver(const int silver) {
-	this->myMoney.remove_silver(silver);
-}
-void Duelist::remove_gold(const int gold) {
-	this->myMoney.remove_gold(gold);
+
+void Duelist::Duel(Duelist& opponent) {
+	int silver = 0;
+	cout << "Enter the money that both of you are betting in silver: \n";
+	cin >> silver;
+	if (this->myMoney.get_gold() * 100 + this->myMoney.get_silver() < silver ||
+		opponent.myMoney.get_gold() * 100 + opponent.myMoney.get_silver() < silver) {
+		throw invalid_argument("Not enough money! \n");
+	}
+	int rounds = 0;
+	cout << "Enter the number of rounds to be played: \n";
+	cin >> rounds;
+	if (this->myDeck.get_all_cards_count() < rounds || opponent.myDeck.get_all_cards_count() < rounds) {
+		throw invalid_argument("Not enough cards! \n");
+	}
+	else {
+		int myScore = 0;
+		int opponentScore = 0;
+		this->myDeck.shuffle();
+		opponent.myDeck.shuffle();
+		for (int i = 0; i < this->myDeck.get_all_cards_count(); i++) {
+			if (this->myDeck.get_card(i)->operator>(*opponent.myDeck.get_card(i))) {
+				myScore++;
+			}
+			else if (this->myDeck.get_card(i)->operator<(*opponent.myDeck.get_card(i))) {
+				opponentScore++;
+			}
+			else {
+				continue;
+			}
+		}
+		if (myScore > opponentScore) {
+			cout << "The first duelist " << this->name << "  wins the duel. \n";
+			cout << "He raised " << silver << "in this game. ";
+			this->myMoney.add_silver(silver);
+			cout << "Now he has " << this->myMoney.get_gold() << " gold  and " << this->myMoney.get_silver() << " silver.";
+
+		}
+		else if (myScore < opponentScore) {
+			cout << "The first duelist " << opponent.name << "  wins the duel. \n";
+			cout << "He raised " << silver << "in this game. ";
+			opponent.myMoney.add_silver(silver);
+			cout << "Now he has " << opponent.myMoney.get_gold() << " gold  and " << opponent.myMoney.get_silver() << " silver.";
+		}
+		else {
+			cout << "Equal score. No money is raised.";
+		}
+	}
 }
