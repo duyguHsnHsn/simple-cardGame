@@ -15,6 +15,9 @@ public:
 	void set_attack_points(const unsigned int);
 	void set_defense_points(const unsigned int);
 
+	friend ostream& operator<<(ostream& output, const MonsterCard& to_print);
+	friend istream& operator>>(istream& input, MonsterCard& to_write);
+
 	bool operator==(const MonsterCard&)const;
 
 	Card* clone() const override;

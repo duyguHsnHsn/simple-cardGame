@@ -12,6 +12,9 @@ public:
 	void set_pendilum_number(const double&);
 	double get_pendilum_number() const;
 
+	friend ostream& operator<<(ostream& output, const PendulumCard& to_print);
+	friend istream& operator>>(istream& input, PendulumCard& to_write);
+
 	bool operator==(const PendulumCard&)const;
 
 	Card* clone() const override;

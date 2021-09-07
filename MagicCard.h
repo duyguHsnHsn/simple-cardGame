@@ -17,6 +17,9 @@ public:
 	void set_type(const Type&);
 	Type get_type() const;
 
+	friend ostream& operator<<(ostream& output, const MagicCard& to_print);
+	friend istream& operator>>(istream& input, MagicCard& to_write);
+
 	bool operator==(const MagicCard&)const;
 
 	Card* clone() const override;

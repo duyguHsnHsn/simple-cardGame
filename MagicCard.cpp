@@ -50,3 +50,36 @@ MagicCard& MagicCard :: operator=(const MagicCard& second) {
 Card* MagicCard::clone() const {
 	return new MagicCard(*this);
 }
+istream& operator>>(istream& input, MagicCard& to_write) {
+	int index = 0;
+	string helper;
+	getline(input, helper);
+	int counter = 0;
+	for (unsigned int i = 0; i < helper.size(); i++) {
+		if (helper[i] == '|' && counter == 0) {
+			to_write.name = to_write.substring(helper, i, index);
+			index = i + 1;
+			counter++;
+		}
+		else if (helper[i] == '|' && counter == 1) {
+			to_write.effect = to_write.substring(helper, i, index);
+			index = i + 1;
+			counter++;
+		}
+		else if (helper[i] == '|' && counter == 2) {
+			to_write.rarity = stoi(to_write.substring(helper, i, index));
+			index = i + 1;
+			counter++;
+		}
+		else if (counter == 3) {
+			to_write.type = to_write.turn_string_to_enum(to_write.substring(helper, helper.size(), index));
+			break;
+		}
+	}
+	return input;
+}
+ostream& operator<<(ostream& output, const MagicCard& to_print) {
+	output << to_print.name << '|' << to_print.effect << '|' << to_print.rarity << '|';
+	output << to_print.turn_enum_to_string(to_print.type);
+	return output;
+}

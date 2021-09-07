@@ -37,3 +37,41 @@ MonsterCard& MonsterCard :: operator=(const MonsterCard& second) {
 Card* MonsterCard::clone() const {
 	return new MonsterCard(*this);
 }
+
+ostream& operator<<(ostream& output, const MonsterCard& to_print) {
+	output << to_print.get_name() << '|' << to_print.get_effect() << '|' << to_print.get_rarity() << '|' << to_print.get_attack_point() << '|' << to_print.get_defense_points();
+	return output;
+}
+istream& operator>>(istream& input, MonsterCard& to_write) {
+	int index = 0;
+	string helper;
+	getline(input, helper);
+	int counter = 0;
+	for (unsigned int i = 0; i < helper.size(); i++) {
+		if (helper[i] == '|' && counter == 0) {
+			to_write.name = to_write.substring(helper, i, index);
+			counter++;
+			index = i + 1;
+		}
+		else if (helper[i] == '|' && counter == 1) {
+			to_write.effect = to_write.substring(helper, i, index);
+			index = i + 1;
+			counter++;
+		}
+		else if (helper[i] == '|' && counter == 2) {
+			to_write.rarity = stoi(to_write.substring(helper, i, index));
+			index = i + 1;
+			counter++;
+		}
+		else if (helper[i] == '|' && counter == 3) {
+			to_write.attack_points = stoi(to_write.substring(helper, i, index));
+			index = i + 1;
+			counter++;
+		}
+		else if (counter == 4) {
+			to_write.defense_points = stoi(to_write.substring(helper, helper.size() + 1, index));
+			break;
+		}
+	}
+	return input;
+}

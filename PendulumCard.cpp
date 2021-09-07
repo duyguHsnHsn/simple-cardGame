@@ -39,3 +39,52 @@ PendulumCard& PendulumCard :: operator=(const PendulumCard& second) {
 Card* PendulumCard::clone() const {
 	return new PendulumCard(*this);
 }
+ostream& operator<<(ostream& output, const PendulumCard& to_print) {
+	output << to_print.name << '|' << to_print.effect << '|' << to_print.rarity << '|' << to_print.attack_points
+		<< '|' << to_print.defense_points << '|' << to_print.pendulum_number << '|';
+	output << to_print.turn_enum_to_string(to_print.type);
+	return output;
+}
+istream& operator>>(istream& input, PendulumCard& to_write) {
+	string helper;
+	int index = 0;
+	getline(input, helper);
+	int counter = 0;
+	for (unsigned int i = 0; i < helper.size(); i++) {
+		if (helper[i] == '|' && counter == 0) {
+			to_write.name = to_write.substring(helper, i, index);
+			counter++;
+			index = i + 1;
+		}
+		else if (helper[i] == '|' && counter == 1) {
+			to_write.effect = to_write.substring(helper, i, index);
+			counter++;
+			index = i + 1;
+		}
+		else if (helper[i] == '|' && counter == 2) {
+			to_write.rarity = stoi(to_write.substring(helper, i, index));
+			counter++;
+			index = i + 1;
+		}
+		else if (helper[i] == '|' && counter == 3) {
+			to_write.attack_points = stoi(to_write.substring(helper, i, index));
+			counter++;
+			index = i + 1;
+		}
+		else if (helper[i] == '|' && counter == 4) {
+			to_write.defense_points = stoi(to_write.substring(helper, i, index));
+			index = i + 1;
+			counter++;
+		}
+		else if (helper[i] == '|' && counter == 5) {
+			to_write.pendulum_number = stoi(to_write.substring(helper, i, index));
+			index = i + 1;
+			counter++;
+		}
+		else if (counter == 6) {
+			to_write.type = to_write.turn_string_to_enum(to_write.substring(helper, helper.size() + 1, index));
+			break;
+		}
+	}
+	return input;
+}
