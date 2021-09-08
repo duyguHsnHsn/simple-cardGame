@@ -36,6 +36,9 @@ public:
 	void clear_deck();
 	void shuffle();
 
+	friend ostream& operator<<(ostream& output, const Deck& to_print);
+	friend istream& operator>>(istream& input, Deck& to_write);
+
 	string get_name() const;
 private:
 	bool is_card_pendulum(Card*)const;

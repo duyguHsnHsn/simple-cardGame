@@ -148,3 +148,100 @@ void Deck::copy_clones(const vector<Card*> other_cards) {
 		this->myCards.push_back(Cards->clone());
 	}
 }
+ostream& operator<<(ostream& output, const Deck& to_print) {
+	output << to_print.name << '|' << to_print.get_all_cards_count() << '|' << to_print.get_monster_card_count() << '|' << to_print.get_magic_card_count() << '|' << to_print.get_pendulum_card_count();
+	output << "\n";
+	for (unsigned int i = 0; i < to_print.myCards.size(); i++) {
+		MonsterCard* ptr = dynamic_cast<MonsterCard*>(to_print.myCards[i]);
+		if (ptr) {
+			if (to_print.is_card_pendulum(to_print.myCards[i])) {
+				continue;
+			}
+			else {
+				output << *(ptr);
+				output << "\n";
+			}
+		}
+	}
+	for (unsigned int i = 0; i < to_print.myCards.size(); i++) {
+		MagicCard* ptr = dynamic_cast<MagicCard*>(to_print.myCards[i]);
+		if (ptr) {
+			if (to_print.is_card_pendulum(to_print.myCards[i])) {
+				continue;
+			}
+			else {
+				output << *(ptr);
+				output << "\n";
+			}
+		}
+	}
+	for (unsigned int i = 0; i < to_print.myCards.size(); i++) {
+		PendulumCard* ptr1 = dynamic_cast<PendulumCard*>(to_print.myCards[i]);
+		if (ptr1) {
+			output << *(ptr1);
+			output << "\n";
+		}
+	}
+	return output;
+}
+istream& operator>>(istream& input, Deck& to_write) {
+	to_write.clear_deck();
+	string whole_line;
+	int overall_count = 0;
+	int monsterCount = 0;
+	int magicCount = 0;
+	int pendulumCount = 0;
+	int counter_for_lines = 0;
+	while (getline(input, whole_line)) {
+		if (counter_for_lines == 0) {
+			int index = 0;
+			int counter = 0;
+			for (unsigned int i = 0; i < whole_line.size(); i++) {
+				if (whole_line[i] == '|' && counter == 0) {
+					to_write.name = to_write.substring(whole_line, i, index);
+					counter++;
+					index = i + 1;
+				}
+				else if (whole_line[i] == '|' && counter == 1) {
+					overall_count = stoi(to_write.substring(whole_line, i, index));
+					index = i + 1;
+					counter++;
+				}
+				else if (whole_line[i] == '|' && counter == 2) {
+					monsterCount = stoi(to_write.substring(whole_line, i, index));
+					index = i + 1;
+					counter++;
+				}
+				else if (whole_line[i] == '|' && counter == 3) {
+					magicCount = stoi(to_write.substring(whole_line, i, index));
+					index = i + 1;
+					counter++;
+				}
+				else if (counter == 4) {
+					pendulumCount = stoi(to_write.substring(whole_line, whole_line.size() + 1, index));
+					break;
+				}
+			}
+			counter_for_lines++;
+		}
+		else {
+			counter_for_lines++;
+			if (counter_for_lines > 1 && counter_for_lines <= 1 + monsterCount) {
+				MonsterCard new_one;
+				stringstream(whole_line) >> new_one;
+				to_write.add_card(&new_one);
+			}
+			if (counter_for_lines > 1 + monsterCount && counter_for_lines <= 1 + monsterCount + magicCount) {
+				MagicCard new_one;
+				stringstream(whole_line) >> new_one;
+				to_write.add_card(&new_one);
+			}
+			if (counter_for_lines > 1 + monsterCount + magicCount && counter_for_lines <= 1 + monsterCount + magicCount + pendulumCount) {
+				PendulumCard new_one;
+				stringstream(whole_line) >> new_one;
+				to_write.add_card(&new_one);
+			}
+		}
+	}
+	return input;
+}
